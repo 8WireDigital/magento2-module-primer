@@ -1,0 +1,24 @@
+{
+    "name": "eightwire/magento2-module-primer",
+    "description": "A cache primer extension ",
+    "type": "magento2-module",
+    "license": [
+        "proprietary"
+    ],
+    "authors":[
+        {
+            "name":"Andrew Kett",
+            "email":"andrew@8wiredigital.co.nz"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "EightWire\\Primer\\": ""
+        }
+    }
+}

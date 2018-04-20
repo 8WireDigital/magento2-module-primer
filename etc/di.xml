@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="EightWire\Primer\Api\Data\PageInterface" type="EightWire\Primer\Model\Page" />
+    <preference for="EightWire\Primer\Api\PageRepositoryInterface" type="EightWire\Primer\Model\PageRepository" />
+    <preference for="EightWire\Primer\Api\Data\PageSearchResultInterface" type="EightWire\Primer\Model\ResourceModel\Page\Collection" />
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="eightwire_primer_crawlercli" xsi:type="object">EightWire\Primer\Console\Command\Crawler</item>
+                <item name="eightwire_primer_flush" xsi:type="object">EightWire\Primer\Console\Command\Flush</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
