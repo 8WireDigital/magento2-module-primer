@@ -13,4 +13,9 @@
             </argument>
         </arguments>
     </type>
+
+
+    <type name="Magento\PageCache\Model\Cache\Type">
+        <plugin name="primer-cache-clean-plugin" type="EightWire\Primer\Model\Cache\TypePlugin" sortOrder="1" />
+    </type>
 </config>

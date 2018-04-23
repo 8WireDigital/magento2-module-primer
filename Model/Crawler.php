@@ -3,7 +3,7 @@ namespace EightWire\Primer\Model;
 
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
-use \GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
 
 class Crawler

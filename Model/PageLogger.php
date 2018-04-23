@@ -51,6 +51,10 @@ class PageLogger
                 $page->setStoreId($storeId);
                 $page->setStatus(0);
                 $page->setPriority(1);
+                /**
+                 * would be good if we could store cache tags here so that we can invalidate crawler by tag however
+                 * X-Magento-Tags is unset on the header in Magento\Framework\App\PageCache\Kernel::process
+                 */
             }
             $this->pageRepository->save($page);
         }
