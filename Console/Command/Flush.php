@@ -14,6 +14,7 @@ class Flush extends Command
 
     /**
      * Flush constructor.
+     *
      * @param \EightWire\Primer\Api\PageRepositoryInterface $pageRepository
      */
     public function __construct(

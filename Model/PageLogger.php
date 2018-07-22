@@ -24,12 +24,13 @@ class PageLogger
 
     public function log(\Magento\Framework\App\Request\Http $request, \Magento\Framework\App\Response\Http $response)
     {
+
         /**
-         * @todo Things not to log
+         * Things not to log
          *
          * Blacklisted User Agents - don't record pages being crawled by bots etc as they will skew results
          * Non Cached pages - whats the point crawling a page if its not going to be cached (how can I find this out reliably?)
-         * Blacklisted Controllers - we can force block certain pages
+         * Non whitelisted actions - we explicitly define which actions should be primed, if not defined we don't need to log it
          * Non 200 responses - don't want to be crawling pages that 301 redirect
          * Requests other than GET - as a crawler can't replicate them without all the data and they are likely user specifc anyway
          * URLS with obvious tracking parameters - will likely be unique per visitor e.g mailchimp etc
@@ -45,12 +46,15 @@ class PageLogger
             if ($result->getTotalCount()) {
                 $page = $result->getFirstItem();
                 $page->incrementPriority();
+                $page->setUpdatedAt(time());
             } else {
                 $page = $this->pageRepository->create();
                 $page->setPath($request->getRequestUri());
                 $page->setStoreId($storeId);
-                $page->setStatus(0);
+                $page->setStatus(1);
                 $page->setPriority(1);
+                $page->setUpdatedAt(time());
+
                 /**
                  * would be good if we could store cache tags here so that we can invalidate crawler by tag however
                  * X-Magento-Tags is unset on the header in Magento\Framework\App\PageCache\Kernel::process
@@ -62,23 +66,40 @@ class PageLogger
 
     /**
      * Check a request object to see if we should log the page
+     *
      * @param \Magento\Framework\App\Request\Http $request
      * @return bool
      */
     private function shouldLogRequest(\Magento\Framework\App\Request\Http $request)
     {
+        // this happens when returning a cached page
+        if ($request->getFullActionName() == null) {
+            return false;
+        }
+
         if ($request->getMethod() != "GET") {
             return false;
         }
 
-        if ($request->getHeader('User-Agent') != 'Magento Primer Crawler') {
+        if ($request->getHeader('User-Agent') === 'Magento Primer Crawler') {
             return false;
         }
+
+        $blacklistParams = ['mc_id'];
+
+        foreach ($request->getParams() as $key => $value) {
+            if (in_array($key, $blacklistParams)) {
+                return false;
+            }
+        }
+
 //        can't do this for now as cached pages don't have an action name
 //        need to work out how to get this or only log non cached pages
-//        if ($this->actionIsBlacklisted($request->getFullActionName())) {
-//            return false;
-//        }
+        // performing logging only on non cached pages would solve this, its kind of a requirement with varnish anyway
+        // this would mean changing the event we fire this on
+        if (!$this->actionIsWhitelisted($request->getFullActionName())) {
+            return false;
+        }
 
         return true;
     }
@@ -100,7 +121,7 @@ class PageLogger
     }
 
     /**
-     * We don't need to sample every single page to get an accurate measure of what pages are most popular
+     * We don't need to log every single page to get an accurate measure of what pages are most popular
      * the purpose of this function is to only trigger recording the url on a configurable sample of pages
      *
      * e.g 1 in every 10 page views
@@ -114,6 +135,7 @@ class PageLogger
 
 
     /**
+     * Check for existing logs matching current request
      *
      * @param $request
      * @return \EightWire\Primer\Api\Data\PageSearchResultsInterface
@@ -150,29 +172,24 @@ class PageLogger
     }
 
     /**
-     * Check getFullActionName of controller to see if it has been explicitly blacklisted
+     * Check getFullActionName of controller to see if it has been explicitly whitelisted
      *
      * @param $action
      * @return bool
      */
-    private function actionIsBlacklisted($action)
+    private function actionIsWhitelisted($action)
     {
         /**
-         * full action names to skip
+         * full action names to log
          *
-         * @todo get full list of actions that will never be cached
          * @todo move to xml config so other modules can provide more actions
          */
         $skipcontrollers = [
-            'cms_noroute_index',
-            'customer_section_load',
-            'customer_account_create',
-            'customer_account_login',
-            'search_ajax_suggest',
-            'page_cache_block_render'
+            'cms_index_index',
+            'cms_page_view',
+            'catalog_product_view',
+            'catalog_category_view'
         ];
-
-        var_dump($action);
 
         return in_array($action, $skipcontrollers);
     }

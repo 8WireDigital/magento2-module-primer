@@ -19,6 +19,7 @@ class Crawler
 
     private $pageRepository;
 
+    private $whenEmpty;
     private $sleepBetweenBatch;
     private $sleepWhenEmpty;
     private $batchSize;
@@ -26,6 +27,10 @@ class Crawler
     private $output;
 
     private $client;
+
+
+    const WHEN_COMPLETE_SLEEP = 'sleep';
+    const WHEN_COMPLETE_STOP = 'stop';
 
 
     /**
@@ -53,6 +58,8 @@ class Crawler
         $this->sleepWhenEmpty = 10;
         $this->batchSize = 10;
 
+        $this->whenComplete = SELF::WHEN_COMPLETE_SLEEP;
+
         $this->client = new Client([
             'verify' => false,
             'headers'         => [
@@ -70,8 +77,14 @@ class Crawler
             $this->getNextBatch();
 
             if (count($this->queue) < 1) {
-                $this->writeln('<info>No pages in queue - waiting '.$this->sleepWhenEmpty.' seconds</info>');
-                sleep($this->sleepWhenEmpty);
+                if ($this->whenComplete == self::WHEN_COMPLETE_SLEEP) {
+                    $this->writeln('<info>No pages in queue - waiting '.$this->sleepWhenEmpty.' seconds</info>');
+                    sleep($this->sleepWhenEmpty); // @codingStandardsIgnoreLine
+                } else {
+                    $this->writeln('<info>No pages in queue - exiting</info>');
+                    return;
+                }
+
             } else {
                 $this->writeln('<info>Crawling '.count($this->queue).' pages</info>');
             }
@@ -81,7 +94,7 @@ class Crawler
             }
             $this->prime();
 
-            sleep($this->sleepBetweenBatch);
+            sleep($this->sleepBetweenBatch); // @codingStandardsIgnoreLine
         }
     }
 
@@ -137,7 +150,6 @@ class Crawler
                     $this->writeln(
                         '<info>GET   '.$page->getPath() .'</info> <comment>'.$response->getStatusCode().', '.number_format (( $responsetime - $sendtime ), 2).'s</comment>'
                     );
-                    //temporaily disabled for testing
                     $page->setStatus(1);
                     $this->pageRepository->save($page);
                 }
@@ -188,6 +200,7 @@ class Crawler
 
     /**
      * Should we send a purge request? There is no point sending it if we don't have varnish
+     *
      * @return bool
      */
     private function shouldPurge()
@@ -197,6 +210,7 @@ class Crawler
             'system/full_page_cache/caching_application',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         ) == 2) {
+            return false; // disabled for now as need to either purge by tag or update vcl @todo add config
             return true;
         }
         return false;
@@ -204,9 +218,25 @@ class Crawler
 
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return $this
      */
     public function setOutput(\Symfony\Component\Console\Output\OutputInterface $output)
     {
         $this->output = $output;
+        return $this;
+    }
+
+    /**
+     * @param $action
+     * @return $this
+     * @throws \Exception
+     */
+    public function setWhenComplete($action)
+    {
+        if (!in_array($action, [self::WHEN_COMPLETE_SLEEP, self::WHEN_COMPLETE_STOP])) {
+            throw new \Exception('invalid action');
+        }
+        $this->whenComplete = $action;
+        return $this;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace EightWire\Primer\Model\Cache;
 
+use Magento\Framework\Module\ModuleListInterface;
+
 class TypePlugin {
 
     /**
@@ -14,9 +16,11 @@ class TypePlugin {
      * @param \EightWire\Primer\Api\PageRepositoryInterface $pageRepository
      */
     public function __construct(
-        \EightWire\Primer\Api\PageRepositoryInterface $pageRepository
+        \EightWire\Primer\Api\PageRepositoryInterface $pageRepository,
+        \Psr\Log\LoggerInterface $logger
     ) {
         $this->pageRepository = $pageRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -34,13 +38,21 @@ class TypePlugin {
         $proceed($mode, $tags);
 
         if ($mode === \Zend_Cache::CLEANING_MODE_ALL) {
-            $this->pageRepository->flush();
-        } else {
-            /** @todo flush by cache tag when not cleaning everything? */
-            if (count($tags)) {
-                var_dump($tags);
-                die();
+
+            try {
+                $this->pageRepository->flush();
+            } catch(\Exception $e) {
+                $this->logger->error('cannot flush primer urls with error: ' . $e->getMessage());
             }
+
         }
+//        else {
+//            /** @todo cache tags required on page log to clear by tag
+//            if (count($tags)) {
+//
+//            }
+//        }
+
+        return $proceed();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace EightWire\Primer\Cron;
-
+use EightWire\Primer\Model\Crawler as CrawlerModel;
 class Crawler
 {
 
@@ -15,7 +15,7 @@ class Crawler
      * @param \EightWire\Primer\Model\Crawler $crawler
      */
     public function __construct(
-        \EightWire\Primer\Model\Crawler $crawler
+        CrawlerModel $crawler
 
     ) {
         $this->crawler = $crawler;
@@ -26,6 +26,6 @@ class Crawler
      */
     public function execute()
     {
-        $this->crawler->run();
+        $this->crawler->setWhenComplete(CrawlerModel::WHEN_COMPLETE_STOP)->run();
     }
 }
