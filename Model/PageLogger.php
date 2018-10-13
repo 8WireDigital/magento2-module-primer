@@ -77,15 +77,35 @@ class PageLogger
             return false;
         }
 
+        // only log GET requests as thats all we crawl
         if ($request->getMethod() != "GET") {
             return false;
         }
 
+        // @todo get these from configuration xml and further db config
+        $blacklistAgents = [
+            'Magento Primer Crawler', // we don't want to log requests from our own crawler
+        ];
+
+        // Don't log requests from some user agents - bots, our crawler etc
         if ($request->getHeader('User-Agent') === 'Magento Primer Crawler') {
-            return false;
+            //@todo regex might be better here
+            if (in_array($key, $blacklistAgents)) {
+                return false;
+            }
         }
 
-        $blacklistParams = ['mc_id'];
+        // @todo get these from configuration xml and further db config
+        $blacklistParams = [
+            'mc_id',
+            'mc_eid',
+            'SID',
+            'utm_source',
+            'utm_campaign',
+            'utm_medium',
+            'utm_term',
+            'emailoffers' //advintage only - to be removed and added through configuration
+        ];
 
         foreach ($request->getParams() as $key => $value) {
             if (in_array($key, $blacklistParams)) {

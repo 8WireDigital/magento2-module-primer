@@ -73,6 +73,11 @@ class Crawler
      */
     public function run()
     {
+        // @todo don't run if full page cache is disabled as would just put load on side
+
+        if (!$this->shouldPrime()) {
+            return;
+        }
         while (true) {
             $this->getNextBatch();
 
@@ -153,7 +158,12 @@ class Crawler
                     $page->setStatus(1);
                     $this->pageRepository->save($page);
                 }
-            );
+            )->otherwise(function(\Exception $e)  use ($page, $sendtime, $request)  {
+                $this->writeln(
+                    '<error>'.$e->getMessage().'</error>'
+                );
+            });
+
         }
 
         \GuzzleHttp\Promise\all($promises)->wait();
@@ -214,6 +224,24 @@ class Crawler
             return true;
         }
         return false;
+    }
+
+    /**
+     * Should we send a cache priming request? There is no point sending it if we don't have a full page cache
+     *
+     * @return bool
+     */
+    private function shouldPrime()
+    {
+//        // we only need to send a purge request if varnish is enabled
+//        if ($this->scopeConfig->getValue(
+//                'system/full_page_cache/caching_application',
+//                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+//            ) == 2) {
+//            return false; // disabled for now as need to either purge by tag or update vcl @todo add config
+//            return true;
+//        }
+        return true;
     }
 
     /**
