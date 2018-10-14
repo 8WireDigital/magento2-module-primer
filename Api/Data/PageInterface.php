@@ -24,6 +24,9 @@ interface PageInterface
 
     const STORE_ID = 'store_id';
 
+    const MAGENTO_VARY = 'magento_vary';
+
+
 
     /**
      * Gets the ID for the page.
@@ -133,4 +136,20 @@ interface PageInterface
      * @return $this
      */
     public function setStoreId($storeId);
+
+
+    /**
+     * Gets x-magento-vary value.
+     *
+     * @return string
+     */
+    public function getMagentoVary();
+
+    /**
+     * Sets x-magento-vary value .
+     *
+     * @param int $priority
+     * @return $this
+     */
+    public function setMagentoVary($value);
 }

@@ -2,6 +2,7 @@
 namespace EightWire\Primer\Model;
 
 use EightWire\Primer\Api\Data\PageInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Page extends \Magento\Framework\Model\AbstractModel implements PageInterface
 {
@@ -12,6 +13,7 @@ class Page extends \Magento\Framework\Model\AbstractModel implements PageInterfa
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
+        ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -19,6 +21,7 @@ class Page extends \Magento\Framework\Model\AbstractModel implements PageInterfa
 
     ) {
         $this->storeManager = $storeManager;
+        $this->scopeConfig = $scopeConfig;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
@@ -118,4 +121,25 @@ class Page extends \Magento\Framework\Model\AbstractModel implements PageInterfa
         return $basePath.$this->getPath();
     }
 
+    public function getCookieDomain()
+    {
+        $code = $this->storeManager->getStore($this->getStoreId())->getCode();
+
+        return $this->scopeConfig->getValue(
+            'web/cookie/cookie_domain',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $code
+        );
+    }
+
+    public function getMagentoVary()
+    {
+        return $this->getData(self::MAGENTO_VARY);
+    }
+
+    public function setMagentoVary($value)
+    {
+        $this->setData(self::MAGENTO_VARY, $value);
+        return $this;
+    }
 }

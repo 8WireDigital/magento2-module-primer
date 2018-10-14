@@ -50,6 +50,7 @@ class PageLogger
             } else {
                 $page = $this->pageRepository->create();
                 $page->setPath($request->getRequestUri());
+                $page->setMagentoVary($request->getCookie('X-Magento-Vary'));
                 $page->setStoreId($storeId);
                 $page->setStatus(1);
                 $page->setPriority(1);
@@ -162,6 +163,8 @@ class PageLogger
      */
     public function matchRequest($request)
     {
+        // @todo - get rid of object manager...
+
         $storeId = $this->storeManager->getStore()->getId();
         $path = $request->getRequestUri();
 
@@ -169,6 +172,8 @@ class PageLogger
         $pathFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $pathFilter->setData('field', 'path');
         $pathFilter->setData('value', $path);
+
+
 
         $pathFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
         $pathFilterGroup->setData('filters', [$pathFilter]);
@@ -181,6 +186,13 @@ class PageLogger
         $storeFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
         $storeFilterGroup->setData('filters', [$storeFilter]);
 
+
+        $varyFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
+        $varyFilter->setData('field', 'magento_vary');
+        $varyFilter->setData('value', $request->getCookie('X-Magento-Vary'));
+
+        $storeFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
+        $storeFilterGroup->setData('filters', [$varyFilter]);
 
         $search_criteria = $this->objectManager->create('Magento\Framework\Api\SearchCriteriaInterface');
         $search_criteria->setFilterGroups([$pathFilterGroup, $storeFilterGroup]);
@@ -203,13 +215,13 @@ class PageLogger
          *
          * @todo move to xml config so other modules can provide more actions
          */
-        $skipcontrollers = [
+        $whitelistedControllers = [
             'cms_index_index',
             'cms_page_view',
             'catalog_product_view',
             'catalog_category_view'
         ];
 
-        return in_array($action, $skipcontrollers);
+        return in_array($action, $whitelistedControllers);
     }
 }

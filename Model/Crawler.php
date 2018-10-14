@@ -5,6 +5,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
+use \GuzzleHttp\Cookie\CookieJar;
 
 class Crawler
 {
@@ -31,6 +32,7 @@ class Crawler
 
     const WHEN_COMPLETE_SLEEP = 'sleep';
     const WHEN_COMPLETE_STOP = 'stop';
+
 
 
     /**
@@ -143,18 +145,28 @@ class Crawler
         foreach ($this->queue as $page) {
             $url = $page->getStoreUrl();
 
+            $options = [];
+
+            if ($page->getMagentoVary() != null) {
+                $options['cookies'] =
+
+                $cookieJar = CookieJar::fromArray([
+                    'X-Magento-Vary' => $page->getMagentoVary()
+                ], $page->getCookieDomain());
+            }
+
             $sendtime = microtime(true);
 
             $request = new Request('GET', $url);
 
-            $promises[]  = $this->client->sendAsync($request)->then(
+            $promises[]  = $this->client->sendAsync($request, $options)->then(
 
                 function (Response $response) use ($page, $sendtime, $request) {
 
                     $responsetime = microtime(true);
 
                     $this->writeln(
-                        '<info>GET   '.$page->getPath() .'</info> <comment>'.$response->getStatusCode().', '.number_format (( $responsetime - $sendtime ), 2).'s</comment>'
+                        '<info>GET   '.$page->getPath() .' '.$page->getMagentoVary().'</info> <comment>'.$response->getStatusCode().', '.number_format (( $responsetime - $sendtime ), 2).'s</comment>'
                     );
                     $page->setStatus(1);
                     $this->pageRepository->save($page);
