@@ -84,13 +84,12 @@ class PageLogger
 
         // @todo get these from configuration xml and further db config
         $blacklistAgents = [
-            'Magento Primer Crawler', // we don't want to log requests from our own crawler
+            '/^Magento Primer Crawler$/',
+            '/Googlebot/'
         ];
 
-        // Don't log requests from some user agents - bots, our crawler etc
-        if ($request->getHeader('User-Agent') === 'Magento Primer Crawler') {
-            //@todo regex might be better here
-            if (in_array($key, $blacklistAgents)) {
+        foreach ($blacklistAgents as $regex) {
+            if (preg_match($regex, $request->getHeader('User-Agent'))) {
                 return false;
             }
         }

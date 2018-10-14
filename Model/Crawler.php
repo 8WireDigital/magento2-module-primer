@@ -46,12 +46,14 @@ class Crawler
         \Psr\Log\LoggerInterface $loggerInterface,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\App\Cache\Manager $cacheManager
     ) {
         $this->pageRepository = $pageRepository;
         $this->storeManager = $storeManager;
         $this->objectManager = $objectManager;
         $this->scopeConfig = $scopeConfig;
+        $this->cacheManager = $cacheManager;
 
         /** @var @todo get these from config */
         $this->sleepBetweenBatch = 5;
@@ -73,9 +75,8 @@ class Crawler
      */
     public function run()
     {
-        // @todo don't run if full page cache is disabled as would just put load on side
-
-        if (!$this->shouldPrime()) {
+        if (!$this->cacheEnabled()) {
+            $this->writeln('<info>Not running crawler as full page cache is disabled</info>');
             return;
         }
         while (true) {
@@ -162,6 +163,10 @@ class Crawler
                 $this->writeln(
                     '<error>'.$e->getMessage().'</error>'
                 );
+                $priority = $page->getPriority();
+                $page->setPriority($priority-1);
+                $page->setStatus(1);
+                $this->pageRepository->save($page);
             });
 
         }
@@ -227,21 +232,18 @@ class Crawler
     }
 
     /**
-     * Should we send a cache priming request? There is no point sending it if we don't have a full page cache
+     * Is the full page cache enabled
      *
      * @return bool
      */
-    private function shouldPrime()
+    private function cacheEnabled()
     {
-//        // we only need to send a purge request if varnish is enabled
-//        if ($this->scopeConfig->getValue(
-//                'system/full_page_cache/caching_application',
-//                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-//            ) == 2) {
-//            return false; // disabled for now as need to either purge by tag or update vcl @todo add config
-//            return true;
-//        }
-        return true;
+        foreach ($this->cacheManager->getStatus() as $cache => $status) {
+            if ($cache == 'full_page') {
+                return $status;
+            }
+        }
+        return false;
     }
 
     /**
