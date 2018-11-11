@@ -185,14 +185,20 @@ class PageLogger
 
         $storeFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
         $storeFilterGroup->setData('filters', [$storeFilter]);
-
-
+        
         $varyFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $varyFilter->setData('field', 'magento_vary');
-        $varyFilter->setData('value', $request->getCookie('X-Magento-Vary'));
+
+        if ($request->getCookie('X-Magento-Vary')) {
+            $varyFilter->setData('value', $request->getCookie('X-Magento-Vary'));
+
+        } else {
+            $varyFilter->setData('condition_type', 'null');
+        }
 
         $storeFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
         $storeFilterGroup->setData('filters', [$varyFilter]);
+
 
         $search_criteria = $this->objectManager->create('Magento\Framework\Api\SearchCriteriaInterface');
         $search_criteria->setFilterGroups([$pathFilterGroup, $storeFilterGroup]);
