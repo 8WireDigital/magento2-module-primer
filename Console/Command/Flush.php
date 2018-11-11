@@ -36,7 +36,7 @@ class Flush extends Command
     }
 
     /**
-     * Main execute function - get an array of grouped products, find their matching simples and link them
+     * Main execute function - invalidate all urls in primer table to force recrawl
      *
      * @param InputInterface $input
      * @param OutputInterface $output
