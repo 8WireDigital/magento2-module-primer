@@ -24,6 +24,8 @@ class Crawler
     private $sleepBetweenBatch;
     private $sleepWhenEmpty;
     private $batchSize;
+    private $maxRunTime;
+    private $crawlThreshold;
 
     private $output;
 
@@ -58,10 +60,11 @@ class Crawler
         $this->cacheManager = $cacheManager;
 
         /** @var @todo get these from config */
-        $this->sleepBetweenBatch = 5;
+        $this->sleepBetweenBatch = 2;
         $this->sleepWhenEmpty = 10;
-        $this->batchSize = 10;
+        $this->batchSize = 5;
         $this->maxRunTime = 240;
+        $this->crawlThreshold = 5;
 
 
         $this->whenComplete = SELF::WHEN_COMPLETE_SLEEP;
@@ -77,7 +80,7 @@ class Crawler
     /**
      * Main run method
      */
-    public function run()
+    public function  run()
     {
         if (!$this->cacheEnabled()) {
             $this->writeln('<info>Not running crawler as full page cache is disabled</info>');
@@ -213,6 +216,14 @@ class Crawler
         $statusFilterGroup->setData('filters', [$statusFilter]);
 
 
+        $priorityFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
+        $priorityFilter->setData('field', 'priority');
+        $priorityFilter->setData('value', $this->crawlThreshold);
+        $priorityFilter->setData('condition_type', 'gteq');
+
+        $priorityFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
+        $priorityFilterGroup->setData('filters', [$priorityFilter]);
+
 
         $sortOrder = $this->objectManager->create('Magento\Framework\Api\SortOrder');
         $sortOrders = [
@@ -221,7 +232,10 @@ class Crawler
 
         /** @var \Magento\Framework\Api\SearchCriteriaInterface $search_criteria */
         $search_criteria = $this->objectManager->create('Magento\Framework\Api\SearchCriteriaInterface');
-        $search_criteria->setFilterGroups([$statusFilterGroup])->setPageSize($this->batchSize)->setCurrentPage(1)->setSortOrders();
+        $search_criteria ->setFilterGroups([$statusFilterGroup, $priorityFilterGroup])
+                         ->setPageSize($this->batchSize)
+                         ->setCurrentPage(1)
+                         ->setSortOrders();
 
         $search_criteria->setSortOrders($sortOrders);
 
