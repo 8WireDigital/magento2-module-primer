@@ -61,6 +61,8 @@ class Crawler
         $this->sleepBetweenBatch = 5;
         $this->sleepWhenEmpty = 10;
         $this->batchSize = 10;
+        $this->maxRunTime = 240;
+
 
         $this->whenComplete = SELF::WHEN_COMPLETE_SLEEP;
 
@@ -81,9 +83,10 @@ class Crawler
             $this->writeln('<info>Not running crawler as full page cache is disabled</info>');
             return;
         }
+        $starttime = time();
+
         while (true) {
             $this->getNextBatch();
-
             if (count($this->queue) < 1) {
                 if ($this->whenComplete == self::WHEN_COMPLETE_SLEEP) {
                     $this->writeln('<info>No pages in queue - waiting '.$this->sleepWhenEmpty.' seconds</info>');
@@ -101,6 +104,13 @@ class Crawler
                 $this->purge();
             }
             $this->prime();
+
+            //stop crawler after max run time elapsed
+            $runtime = time() - $starttime;
+            if ($this->maxRunTime > 0 && $runtime > $this->maxRunTime) {
+                $this->writeln('<info>Max runtime elapsed - exiting</info>');
+                return;
+            }
 
             sleep($this->sleepBetweenBatch); // @codingStandardsIgnoreLine
         }
