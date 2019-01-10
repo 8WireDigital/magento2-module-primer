@@ -86,7 +86,8 @@ class PageLogger
         // @todo get these from configuration xml and further db config
         $blacklistAgents = [
             '/^Magento Primer Crawler$/',
-            '/Googlebot/'
+            '/Googlebot/',
+            '/UptimeRobot/'
         ];
 
         foreach ($blacklistAgents as $regex) {
