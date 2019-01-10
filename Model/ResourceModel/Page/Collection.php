@@ -89,4 +89,18 @@ class Collection extends AbstractCollection implements PageSearchResultInterface
     {
         return $this;
     }
+
+    /**
+     * Bulk reset status column
+     *
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function flushStatus()
+    {
+        $this->getConnection()->update(
+            $this->getResource()->getMainTable(),
+            ['status' => 0],
+            $this->getResource()->getIdFieldName() . ' IN(' . implode(',', $this->getAllIds()) . ')'
+        );
+    }
 }

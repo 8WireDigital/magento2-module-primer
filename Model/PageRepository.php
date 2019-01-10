@@ -184,6 +184,11 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
     }
 
 
+    /**
+     * Flush all pages within a collection so they can be crawled again
+     *
+     * @param null $collection
+     */
     public function flush($collection = null)
     {
         if ($collection == null) {
@@ -191,9 +196,6 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
             $collection = $this->getList($search_criteria);
         }
 
-        foreach ($collection as $page) {
-            $page->setStatus(0);
-            $this->save($page); //@todo bulk save
-        }
+        $collection->flushStatus();
     }
 }
