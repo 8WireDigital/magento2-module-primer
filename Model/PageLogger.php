@@ -104,6 +104,7 @@ class PageLogger
             'utm_campaign',
             'utm_medium',
             'utm_term',
+            'fbclid',
             'emailoffers' //advintage only - to be removed and added through configuration
         ];
 
