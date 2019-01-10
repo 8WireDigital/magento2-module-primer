@@ -105,6 +105,7 @@ class PageLogger
             'utm_medium',
             'utm_term',
             'fbclid',
+            'gclid',
             'emailoffers' //advintage only - to be removed and added through configuration
         ];
 
