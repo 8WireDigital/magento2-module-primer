@@ -2,9 +2,10 @@
     "name": "eightwire/magento2-module-primer",
     "description": "A cache primer extension ",
     "type": "magento2-module",
-    "homepage": "https://bitbucket.org/8wiredigital/m2-primer",
+    "homepage": "https://github.com/8WireDigital/magento2-module-primer",
     "license": [
-        "proprietary"
+        "OSL-3.0",
+        "AFL-3.0"
     ],
     "authors":[
         {

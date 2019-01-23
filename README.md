@@ -2,9 +2,9 @@
 
 A full page cache priming tool for Magento 2
 
-Requests to whitelisted actions will be logged to a primer queue with a higher priority given to pages that are viewed most frequently. 
+Requests to whitelisted actions are logged to a history table with a higher priority given to pages that are viewed most frequently. 
 A console and cron task is provided to initiate the crawler and prime pages in the queue from highest to lowest priority. 
-Supports multi store views and X-Magento-Vary cookies 
+Supports multiple store views and X-Magento-Vary cookies.
 
 
 ![Recordit GIF](./example.gif)
