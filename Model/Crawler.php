@@ -80,7 +80,7 @@ class Crawler
     /**
      * Main run method
      */
-    public function  run()
+    public function run()
     {
         if (!$this->cacheEnabled()) {
             $this->writeln('<info>Not running crawler as full page cache is disabled</info>');
@@ -300,7 +300,7 @@ class Crawler
     public function setWhenComplete($action)
     {
         if (!in_array($action, [self::WHEN_COMPLETE_SLEEP, self::WHEN_COMPLETE_STOP])) {
-            throw new \Exception('invalid action');
+            throw new \Exception('Invalid Action');
         }
         $this->whenComplete = $action;
         return $this;
