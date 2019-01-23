@@ -1,22 +1,16 @@
 <?php
 namespace EightWire\Primer\Model;
 
-use EightWire\Primer\Api\Data\PageSearchResultInterfaceFactory as SearchResultFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use EightWire\Primer\Model\ResourceModel\Page as Resource;
-//use Magento\Sales\Model\ResourceModel\Metadata;
-//use Magento\Sales\Api\Data\CreditmemoSearchResultInterfaceFactory as SearchResultFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use EightWire\Primer\Api\Data\PageSearchResultInterfaceFactory as SearchResultFactory;
+use EightWire\Primer\Model\ResourceModel\Page as Resource;
 
 class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
 {
-    /**
-     * @var Metadata
-     */
-    protected $metadata;
 
     /**
      * @var SearchResultFactory
@@ -45,14 +39,14 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
      */
     public function __construct(
         SearchResultFactory $searchResultFactory,
-        CollectionProcessorInterface $collectionProcessor = null,
+        CollectionProcessorInterface $collectionProcessor,
         \EightWire\Primer\Model\PageFactory $pageFactory,
-        \Magento\Framework\ObjectManagerInterface $objectManager
+        \Magento\Framework\Api\SearchCriteriaInterfaceFactory $searchCriteriaInterfaceFactory
     ) {
         $this->pageFactory = $pageFactory;
         $this->searchResultFactory = $searchResultFactory;
-        $this->objectManager = $objectManager;
-        $this->collectionProcessor = $collectionProcessor ?: $this->getCollectionProcessor();
+        $this->collectionProcessor = $collectionProcessor;
+        $this->searchCriteriaInterfaceFactory = $searchCriteriaInterfaceFactory;
     }
 
     /**
@@ -167,22 +161,6 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
         return $this->registry[$entity->getEntityId()];
     }
 
-    /**
-     * Retrieve collection processor
-     *
-     * @deprecated 100.2.0
-     * @return CollectionProcessorInterface
-     */
-    private function getCollectionProcessor()
-    {
-        if (!$this->collectionProcessor) {
-            $this->collectionProcessor = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class
-            );
-        }
-        return $this->collectionProcessor;
-    }
-
 
     /**
      * Flush all pages within a collection so they can be crawled again
@@ -192,8 +170,8 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
     public function flush($collection = null)
     {
         if ($collection == null) {
-            $search_criteria = $this->objectManager->create('Magento\Framework\Api\SearchCriteriaInterface');
-            $collection = $this->getList($search_criteria);
+            $searchCriteria = $this->searchCriteriaInterfaceFactory->create();
+            $collection = $this->getList($searchCriteria);
         }
 
         $collection->flushStatus();
