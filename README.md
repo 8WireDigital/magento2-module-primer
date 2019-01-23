@@ -13,8 +13,8 @@ Supports multiple store views and X-Magento-Vary cookies.
 ## Usage
 
 ```
-php -f bin/magento primer:crawler:run   # Run crawler task
-php -f bin/magento primer:flush         # Flush urls to force a recrawl
+php bin/magento primer:crawler:run   # Run crawler task
+php bin/magento primer:flush         # Flush urls to force a recrawl
 ```
 
 Provided by [Eight Wire Digital](https://www.8wiredigital.co.nz/)
