@@ -1,5 +1,10 @@
 # Magento 2 Cache Primer
 
+[![Packagist](https://img.shields.io/packagist/v/eightwire/magento2-module-primer.svg)](https://packagist.org/packages/eightwire/magento2-module-primer) 
+<!-- [![Packagist](https://img.shields.io/packagist/dt/eightwire/magento2-module-primer.svg)](https://packagist.org/packages/eightwire/magento2-module-primer) -->
+<!-- [![Packagist](https://img.shields.io/packagist/l/eightwire/magento2-module-primer.svg)](https://packagist.org/packages/eightwire/magento2-module-primer) -->
+
+
 A full page cache priming tool for Magento 2
 
 Requests to whitelisted actions are logged to a history table with a higher priority given to pages that are viewed most frequently. 
