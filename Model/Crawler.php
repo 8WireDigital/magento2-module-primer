@@ -1,13 +1,14 @@
 <?php
 namespace EightWire\Primer\Model;
 
+use EightWire\Primer\Api\CrawlerInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
 use \GuzzleHttp\Cookie\CookieJar;
 
-class Crawler
+class Crawler implements CrawlerInterface
 {
 
     private $storeManager;
@@ -20,20 +21,19 @@ class Crawler
 
     private $pageRepository;
 
-    private $whenEmpty;
     private $sleepBetweenBatch;
     private $sleepWhenEmpty;
     private $batchSize;
     private $maxRunTime;
     private $crawlThreshold;
+    private $whenComplete;
 
     private $output;
 
     private $client;
 
 
-    const WHEN_COMPLETE_SLEEP = 'sleep';
-    const WHEN_COMPLETE_STOP = 'stop';
+
 
 
 
@@ -51,23 +51,15 @@ class Crawler
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Cache\Manager $cacheManager
+        \Magento\Framework\App\Cache\Manager $cacheManager,
+        \EightWire\Primer\Helper\Config $configHelper
     ) {
         $this->pageRepository = $pageRepository;
         $this->storeManager = $storeManager;
         $this->objectManager = $objectManager;
         $this->scopeConfig = $scopeConfig;
         $this->cacheManager = $cacheManager;
-
-        /** @var @todo get these from config */
-        $this->sleepBetweenBatch = 2;
-        $this->sleepWhenEmpty = 10;
-        $this->batchSize = 5;
-        $this->maxRunTime = 240;
-        $this->crawlThreshold = 5;
-
-
-        $this->whenComplete = SELF::WHEN_COMPLETE_SLEEP;
+        $this->configHelper = $configHelper;
 
         $this->client = new Client([
             'verify' => false,
@@ -91,9 +83,9 @@ class Crawler
         while (true) {
             $this->getNextBatch();
             if (count($this->queue) < 1) {
-                if ($this->whenComplete == self::WHEN_COMPLETE_SLEEP) {
-                    $this->writeln('<info>No pages in queue - waiting '.$this->sleepWhenEmpty.' seconds</info>');
-                    sleep($this->sleepWhenEmpty); // @codingStandardsIgnoreLine
+                if ($this->getWhenComplete() == self::WHEN_COMPLETE_SLEEP) {
+                    $this->writeln('<info>No pages in queue - waiting '.$this->getSleepWhenEmpty().' seconds</info>');
+                    sleep($this->getSleepWhenEmpty()); // @codingStandardsIgnoreLine
                 } else {
                     $this->writeln('<info>No pages in queue - exiting</info>');
                     return;
@@ -110,12 +102,12 @@ class Crawler
 
             //stop crawler after max run time elapsed
             $runtime = time() - $starttime;
-            if ($this->maxRunTime > 0 && $runtime > $this->maxRunTime) {
+            if ($this->getMaxRunTime() > 0 && $runtime > $this->getMaxRunTime()) {
                 $this->writeln('<info>Max runtime elapsed - exiting</info>');
                 return;
             }
 
-            sleep($this->sleepBetweenBatch); // @codingStandardsIgnoreLine
+            sleep($this->getSleepBetweenBatch()); // @codingStandardsIgnoreLine
         }
     }
 
@@ -293,16 +285,136 @@ class Crawler
     }
 
     /**
-     * @param $action
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getWhenComplete()
+    {
+        if (is_null($this->whenComplete)) {
+            $this->setWhenComplete(self::WHEN_COMPLETE_SLEEP);
+        }
+        return $this->whenComplete;
+    }
+
+    /**
+     * @param $whenComplete
      * @return $this
      * @throws \Exception
      */
-    public function setWhenComplete($action)
+    public function setWhenComplete($whenComplete)
     {
-        if (!in_array($action, [self::WHEN_COMPLETE_SLEEP, self::WHEN_COMPLETE_STOP])) {
+        if (!in_array($whenComplete, [self::WHEN_COMPLETE_SLEEP, self::WHEN_COMPLETE_STOP])) {
             throw new \Exception('Invalid Action');
         }
-        $this->whenComplete = $action;
+
+        $this->whenComplete = $whenComplete;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getSleepBetweenBatch()
+    {
+        if (is_null($this->sleepBetweenBatch)) {
+            $this->setSleepBetweenBatch($this->configHelper->getSleepBetweenBatch());
+        }
+
+        return $this->sleepBetweenBatch;
+    }
+
+    /**
+     * @param $sleepBetweenBatch
+     * @return $this
+     */
+    public function setSleepBetweenBatch($sleepBetweenBatch)
+    {
+        $this->sleepBetweenBatch = $sleepBetweenBatch;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSleepWhenEmpty()
+    {
+        if (is_null($this->sleepWhenEmpty)) {
+            $this->setSleepWhenEmpty($this->configHelper->getSleepWhenEmpty());
+        }
+
+        return $this->sleepWhenEmpty;
+    }
+
+    /**
+     * @param $sleepWhenEmpty
+     * @return $this
+     */
+    public function setSleepWhenEmpty($sleepWhenEmpty)
+    {
+        $this->sleepWhenEmpty = $sleepWhenEmpty;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBatchSize()
+    {
+        if (is_null($this->batchSize)) {
+            $this->setBatchSize($this->configHelper->getBatchSize());
+        }
+
+        return $this->batchSize;
+    }
+
+    /**
+     * @param $batchSize
+     * @return $this
+     */
+    public function setBatchSize($batchSize)
+    {
+        $this->batchSize = $batchSize;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRunTime()
+    {
+        return $this->maxRunTime;
+    }
+
+    /**
+     * @param $maxRunTime
+     * @return $this
+     */
+    public function setMaxRunTime($maxRunTime)
+    {
+        $this->maxRunTime = $maxRunTime;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCrawlThreshold()
+    {
+        if (is_null($this->crawlThreshold)) {
+            $this->setCrawlThreshold($this->configHelper->getCrawlThreshold());
+        }
+
+        return $this->crawlThreshold;
+    }
+
+    /**
+     * @param $crawlThreshold
+     * @return $this
+     */
+    public function setCrawlThreshold($crawlThreshold)
+    {
+        $this->crawlThreshold = $crawlThreshold;
+        return $this;
+    }
+
 }

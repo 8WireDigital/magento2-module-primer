@@ -4,6 +4,8 @@
     <preference for="EightWire\Primer\Api\Data\PageInterface" type="EightWire\Primer\Model\Page" />
     <preference for="EightWire\Primer\Api\PageRepositoryInterface" type="EightWire\Primer\Model\PageRepository" />
     <preference for="EightWire\Primer\Api\Data\PageSearchResultInterface" type="EightWire\Primer\Model\ResourceModel\Page\Collection" />
+    <preference for="EightWire\Primer\Api\CrawlerInterface" type="EightWire\Primer\Model\Crawler" />
+
 
     <type name="Magento\Framework\Console\CommandList">
         <arguments>

@@ -2,7 +2,7 @@
 
 namespace EightWire\Primer\Cron;
 
-use EightWire\Primer\Model\Crawler as CrawlerModel;
+use EightWire\Primer\Api\CrawlerInterface;
 
 class Crawler
 {
@@ -14,13 +14,15 @@ class Crawler
 
     /**
      * Crawler constructor.
-     * @param \EightWire\Primer\Model\Crawler $crawler
+     * @param CrawlerInterface $crawler
+     * @param \EightWire\Primer\Helper\Config $configHelper
      */
     public function __construct(
-        CrawlerModel $crawler
-
+        CrawlerInterface $crawler,
+        \EightWire\Primer\Helper\Config $configHelper
     ) {
         $this->crawler = $crawler;
+        $this->configHelper = $configHelper;
     }
 
     /**
@@ -33,15 +35,21 @@ class Crawler
         }
     }
 
+    /**
+     * get config for whether the crawler should run from cron triggers
+     * @return mixed
+     */
     protected function enableOnCron()
     {
-        //@todo get from config
-        return false;
+        return $this->configHelper->getCronEnabled();
     }
 
+    /**
+     * get config for what cron should do when all pages are crawled
+     * @return mixed
+     */
     protected function getOnComplete()
     {
-        //@todo get from config
-        return CrawlerModel::WHEN_COMPLETE_STOP;
+        return $this->configHelper->getCronOnComplete();
     }
 }

@@ -17,7 +17,7 @@ class Crawler extends Command
      * @param \EightWire\Primer\Model\Crawler $crawler
      */
     public function __construct(
-        \EightWire\Primer\Model\Crawler $crawler
+        \EightWire\Primer\Api\CrawlerInterface $crawler
 
     ) {
         $this->crawler = $crawler;
@@ -44,6 +44,14 @@ class Crawler extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->crawler->setOutput($output);
+
+        //@todo console params to set crawler config. e.g
+//        $this->crawler->setWhenComplete(\EightWire\Primer\Model\Crawler::WHEN_COMPLETE_STOP);
+//        $this->crawler->setSleepBetweenBatch(10);
+//        $this->crawler->setSleepWhenEmpty(20);
+//        $this->crawler->setBatchSize(5);
+//        $this->crawler->setMaxRunTime(20);
+//        $this->crawler->setCrawlThreshold(3);
         $this->crawler->run();
     }
 }
