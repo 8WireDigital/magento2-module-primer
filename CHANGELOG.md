@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a changelog file
 - Added a license
 
-## [0.1.5] - 2014-12-12
+## [0.1.5] - 2019-01-10
 ### Changed
 - Improved efficiency of page flush 
 
