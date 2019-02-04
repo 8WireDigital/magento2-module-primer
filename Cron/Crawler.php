@@ -1,7 +1,9 @@
 <?php
 
 namespace EightWire\Primer\Cron;
+
 use EightWire\Primer\Model\Crawler as CrawlerModel;
+
 class Crawler
 {
 
@@ -26,6 +28,20 @@ class Crawler
      */
     public function execute()
     {
-        $this->crawler->setWhenComplete(CrawlerModel::WHEN_COMPLETE_STOP)->run();
+        if ($this->enableOnCron()) {
+            $this->crawler->setWhenComplete($this->getOnComplete())->run();
+        }
+    }
+
+    protected function enableOnCron()
+    {
+        //@todo get from config
+        return false;
+    }
+
+    protected function getOnComplete()
+    {
+        //@todo get from config
+        return CrawlerModel::WHEN_COMPLETE_STOP;
     }
 }
