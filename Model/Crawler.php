@@ -33,10 +33,6 @@ class Crawler implements CrawlerInterface
     private $client;
 
 
-
-
-
-
     /**
      * Crawler constructor.
      * @param \EightWire\Primer\Api\PageRepositoryInterface $pageRepository
@@ -82,22 +78,25 @@ class Crawler implements CrawlerInterface
 
         while (true) {
             $this->getNextBatch();
+
+            // if we have no items in queue either stop process or sleep depending on config
             if (count($this->queue) < 1) {
-                if ($this->getWhenComplete() == self::WHEN_COMPLETE_SLEEP) {
-                    $this->writeln('<info>No pages in queue - waiting '.$this->getSleepWhenEmpty().' seconds</info>');
-                    sleep($this->getSleepWhenEmpty()); // @codingStandardsIgnoreLine
-                } else {
+                if ($this->getWhenComplete() != self::WHEN_COMPLETE_SLEEP) {
                     $this->writeln('<info>No pages in queue - exiting</info>');
                     return;
                 }
 
-            } else {
-                $this->writeln('<info>Crawling '.count($this->queue).' pages</info>');
+                $this->writeln('<info>No pages in queue - waiting '.$this->getSleepWhenEmpty().' seconds</info>');
+                sleep($this->getSleepWhenEmpty()); // @codingStandardsIgnoreLine
+                continue;
             }
+
+            $this->writeln('<info>Crawling '.count($this->queue).' pages</info>');
 
             if ($this->shouldPurge()) {
                 $this->purge();
             }
+            
             $this->prime();
 
             //stop crawler after max run time elapsed
@@ -153,9 +152,7 @@ class Crawler implements CrawlerInterface
             $options = [];
 
             if ($page->getMagentoVary() != null) {
-                $options['cookies'] =
-
-                $cookieJar = CookieJar::fromArray([
+                $options['cookies'] = CookieJar::fromArray([
                     'X-Magento-Vary' => $page->getMagentoVary()
                 ], $page->getCookieDomain());
             }
@@ -176,7 +173,7 @@ class Crawler implements CrawlerInterface
                     $page->setStatus(1);
                     $this->pageRepository->save($page);
                 }
-            )->otherwise(function(\Exception $e)  use ($page, $sendtime, $request)  {
+            )->otherwise(function (\Exception $e) use ($page, $sendtime, $request) {
                 $this->writeln(
                     '<error>'.$e->getMessage().'</error>'
                 );
