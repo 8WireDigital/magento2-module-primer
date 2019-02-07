@@ -29,8 +29,6 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
      */
     private $collectionProcessor;
 
-    private $pageRepository;
-
     /**
      * CreditmemoRepository constructor.
      * @param Metadata $metadata
