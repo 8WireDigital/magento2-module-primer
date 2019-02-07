@@ -52,27 +52,27 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
     /**
      * Loads a specified page
      *
-     * @param int $id The page ID.
+     * @param int $pageId The page ID.
      * @return \EightWire\Primer\Api\Data\PageInterface Page Interface
      * @throws InputException
      * @throws NoSuchEntityException
      */
-    public function get($id)
+    public function get($pageId)
     {
-        if (!$id) {
+        if (!$pageId) {
             throw new InputException(__('Id required'));
         }
-        if (!isset($this->registry[$id])) {
+        if (!isset($this->registry[$pageId])) {
             /** @var \EightWire\Primer\Api\Data\PageInterface $entity */
-            $entity = $this->pageFactory->create()->load($id);
+            $entity = $this->pageFactory->create()->load($pageId);
 
             if (!$entity->getEntityId()) {
                 throw new NoSuchEntityException(__('Requested entity doesn\'t exist'));
             }
-            $this->registry[$id] = $entity;
+            $this->registry[$pageId] = $entity;
         }
 
-        return $this->registry[$id];
+        return $this->registry[$pageId];
     }
 
     /**
@@ -122,24 +122,24 @@ class PageRepository implements \EightWire\Primer\Api\PageRepositoryInterface
     /**
      * Deletes a specified page by ID
      *
-     * @param int $id
+     * @param int $pageId
      * @return bool|void
      * @throws CouldNotDeleteException
      * @throws InputException
      */
-    public function deleteById($id)
+    public function deleteById($pageId)
     {
 
-        if (!$id) {
+        if (!$pageId) {
             throw new InputException(__('Id required'));
         }
-        if (!isset($this->registry[$id])) {
+        if (!isset($this->registry[$pageId])) {
             /** @var \EightWire\Primer\Api\Data\PageInterface $entity */
-            $entity = $this->pageFactory->create()->load($id);
-            $this->registry[$id] = $entity;
+            $entity = $this->pageFactory->create()->load($pageId);
+            $this->registry[$pageId] = $entity;
         }
 
-        $this->delete($this->registry[$id]);
+        $this->delete($this->registry[$pageId]);
     }
 
 

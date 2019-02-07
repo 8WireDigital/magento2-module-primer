@@ -290,7 +290,7 @@ class Crawler implements CrawlerInterface
      */
     public function getWhenComplete()
     {
-        if (is_null($this->whenComplete)) {
+        if (null === $this->whenComplete) {
             $this->setWhenComplete(self::WHEN_COMPLETE_SLEEP);
         }
         return $this->whenComplete;
@@ -316,7 +316,7 @@ class Crawler implements CrawlerInterface
      */
     public function getSleepBetweenBatch()
     {
-        if (is_null($this->sleepBetweenBatch)) {
+        if (null === $this->sleepBetweenBatch) {
             $this->setSleepBetweenBatch($this->configHelper->getSleepBetweenBatch());
         }
 
@@ -338,7 +338,7 @@ class Crawler implements CrawlerInterface
      */
     public function getSleepWhenEmpty()
     {
-        if (is_null($this->sleepWhenEmpty)) {
+        if (null === $this->sleepWhenEmpty) {
             $this->setSleepWhenEmpty($this->configHelper->getSleepWhenEmpty());
         }
 
@@ -360,7 +360,7 @@ class Crawler implements CrawlerInterface
      */
     public function getBatchSize()
     {
-        if (is_null($this->batchSize)) {
+        if (null === $this->batchSize) {
             $this->setBatchSize($this->configHelper->getBatchSize());
         }
 
@@ -400,7 +400,7 @@ class Crawler implements CrawlerInterface
      */
     public function getCrawlThreshold()
     {
-        if (is_null($this->crawlThreshold)) {
+        if (null === $this->crawlThreshold) {
             $this->setCrawlThreshold($this->configHelper->getCrawlThreshold());
         }
 
