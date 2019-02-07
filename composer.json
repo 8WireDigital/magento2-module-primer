@@ -1,6 +1,6 @@
 {
     "name": "eightwire/magento2-module-primer",
-    "description": "A cache primer extension ",
+    "description": "A cache primer extension for Magento 2",
     "type": "magento2-module",
     "homepage": "https://github.com/8WireDigital/magento2-module-primer",
     "license": [
