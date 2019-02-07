@@ -224,13 +224,13 @@ class PageLogger
          *
          * @todo move to xml config so other modules can provide more actions
          */
-        $whitelistedControllers = [
+        $controllerWhitelist = [
             'cms_index_index',
             'cms_page_view',
             'catalog_product_view',
             'catalog_category_view'
         ];
 
-        return in_array($action, $whitelistedControllers);
+        return in_array($action, $controllerWhitelist);
     }
 }
