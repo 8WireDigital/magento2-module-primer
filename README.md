@@ -1,4 +1,5 @@
 [![Packagist](https://img.shields.io/packagist/v/eightwire/magento2-module-primer.svg)](https://packagist.org/packages/eightwire/magento2-module-primer) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d4960d1dc5414a98aa1e7cd81daf1b45)](https://www.codacy.com/app/andrewkett/magento2-module-primer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=8WireDigital/magento2-module-primer&amp;utm_campaign=Badge_Grade)
 <!-- [![Packagist](https://img.shields.io/packagist/dt/eightwire/magento2-module-primer.svg)](https://packagist.org/packages/eightwire/magento2-module-primer) -->
 <!-- [![Packagist](https://img.shields.io/packagist/l/eightwire/magento2-module-primer.svg)](https://packagist.org/packages/eightwire/magento2-module-primer) -->
 
