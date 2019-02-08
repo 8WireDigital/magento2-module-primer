@@ -110,11 +110,12 @@ class PageLogger
             'emailoffers' //advintage only - to be removed and added through configuration
         ];
 
-        foreach ($request->getParams() as $key => $value) {
-            if (in_array($key, $blacklistParams)) {
+        foreach (array_keys($request->getParams()) as $parameterName) {
+            if (in_array($parameterName, $blacklistParams)) {
                 return false;
             }
         }
+        
 
 //        can't do this for now as cached pages don't have an action name
 //        need to work out how to get this or only log non cached pages
@@ -166,21 +167,15 @@ class PageLogger
      */
     public function matchRequest($request)
     {
-        // @todo - get rid of object manager...
-
         $storeId = $this->storeManager->getStore()->getId();
         $path = $request->getRequestUri();
-
 
         $pathFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $pathFilter->setData('field', 'path');
         $pathFilter->setData('value', $path);
 
-
-
         $pathFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
         $pathFilterGroup->setData('filters', [$pathFilter]);
-
 
         $storeFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $storeFilter->setData('field', 'store_id');
@@ -201,7 +196,6 @@ class PageLogger
 
         $storeFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
         $storeFilterGroup->setData('filters', [$varyFilter]);
-
 
         $search_criteria = $this->objectManager->create('Magento\Framework\Api\SearchCriteriaInterface');
         $search_criteria->setFilterGroups([$pathFilterGroup, $storeFilterGroup]);
