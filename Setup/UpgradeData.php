@@ -20,10 +20,5 @@ class UpgradeData implements UpgradeDataInterface
      */
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $installer = $setup;
-
-        //if (version_compare($context->getVersion(), '1.0.1') >= 0) { // change version
-        // add your code here
-        //}
     }
 }
