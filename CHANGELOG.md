@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [0.1.7] - 2019-02-15
+### Changed
+- Code standards refactoring 
+
+### Added
+- Move config to helper class
+- Add and program too crawler interface
+- Add config getters/setters to interface so that default config can be overridden by consuming code
 
 ## [0.1.6] - 2019-02-4
 ### Changed
