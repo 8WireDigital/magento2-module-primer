@@ -207,7 +207,7 @@ class Crawler implements CrawlerInterface
 
         $priorityFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $priorityFilter->setData('field', 'priority');
-        $priorityFilter->setData('value', $this->getCrawlThreshold()());
+        $priorityFilter->setData('value', $this->getCrawlThreshold());
         $priorityFilter->setData('condition_type', 'gteq');
 
         $priorityFilterGroup = $this->objectManager->create('Magento\Framework\Api\Search\FilterGroup');
@@ -361,8 +361,6 @@ class Crawler implements CrawlerInterface
             $this->setBatchSize($this->configHelper->getBatchSize());
         }
 
-        echo $this->batchSize;
-        die();
         return $this->batchSize;
     }
 
