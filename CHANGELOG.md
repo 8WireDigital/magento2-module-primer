@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [0.1.9] - 2019-02-18
+### Changed
+- Add ability to pass options into crawler console command 
+
 ## [0.1.8] - 2019-02-18
 ### Fixed
 - Fixed issue where configured batch size wasn't used 
