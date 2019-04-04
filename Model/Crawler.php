@@ -57,12 +57,7 @@ class Crawler implements CrawlerInterface
         $this->cacheManager = $cacheManager;
         $this->configHelper = $configHelper;
 
-        $this->client = new Client([
-            'verify' => false,
-            'headers'         => [
-                'User-Agent' => 'Magento Primer Crawler',
-            ],
-        ]);
+
     }
 
     /**
@@ -124,7 +119,7 @@ class Crawler implements CrawlerInterface
 
             $request = new Request('PURGE', $url);
 
-            $promises[] = $this->client->sendAsync($request)->then(
+            $promises[] = $this->getClient()->sendAsync($request)->then(
                 function (Response $response) use ($page, $sendtime, $request) {
                     $responsetime = microtime(true);
                     $this->writeln('<info>PURGE '.$page->getPath() .'</info> <comment>'.$response->getStatusCode().', '.number_format (( $responsetime - $sendtime ), 2).'s</comment>');
@@ -161,7 +156,7 @@ class Crawler implements CrawlerInterface
 
             $request = new Request('GET', $url);
 
-            $promises[]  = $this->client->sendAsync($request, $options)->then(
+            $promises[]  = $this->getClient()->sendAsync($request, $options)->then(
 
                 function (Response $response) use ($page, $sendtime, $request) {
 
@@ -414,4 +409,16 @@ class Crawler implements CrawlerInterface
         return $this;
     }
 
+    protected function getClient()
+    {
+        if (!$this->client) {
+            $this->client = new Client([
+                'verify' => false,
+                'headers'         => [
+                    'User-Agent' => 'Magento Primer Crawler',
+                ],
+            ]);
+        }
+        return $this->client;
+    }
 }
