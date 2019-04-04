@@ -26,6 +26,11 @@ class PageLoadObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $this->pageLogger->log($observer->getEvent()->getRequest(), $observer->getEvent()->getResponse());
+        try {
+            $this->pageLogger->log($observer->getEvent()->getRequest(), $observer->getEvent()->getResponse());
+        } catch (\Exception $e) {
+            // fail silently if logging fails as we don't want to break page loads
+            return;
+        }
     }
 }
