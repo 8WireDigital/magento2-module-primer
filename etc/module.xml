@@ -3,6 +3,7 @@
     <module name="EightWire_Primer" setup_version="1.0.1">
         <sequence>
             <module name="Magento_PageCache"/>
+            <module name="Magento_Backend"/>
         </sequence>
     </module>
 </config>
