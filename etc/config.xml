@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <primer_crawler>
-            <default>
+        <system>
+            <cache_primer>
                 <sleep_between_batch>2</sleep_between_batch>
                 <sleep_when_empty>10</sleep_when_empty>
                 <batch_size>5</batch_size>
                 <crawl_threshold>5</crawl_threshold>
-            </default>
-            <cron>
-                <enabled>0</enabled>
-                <on_complete>stop</on_complete>
-                <max_run_time>240</max_run_time>
-            </cron>
-        </primer_crawler>
+                <cron_enabled>0</cron_enabled>
+                <cron_on_complete>stop</cron_on_complete>
+                <cron_max_run_time>240</cron_max_run_time>
+            </cache_primer>
+        </system>
     </default>
 </config>

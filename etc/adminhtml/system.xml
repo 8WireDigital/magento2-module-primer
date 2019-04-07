@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="system">
+            <group id="cache_primer" translate="label" showInDefault="1" showInWebsite="0" showInStore="0" sortOrder="650">
+                <label>Cache Primer</label>
+
+                <field id="batch_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Batch Size</label>
+                    <comment>Number of urls to crawl in a batch</comment>
+                </field>
+
+                <field id="sleep_between_batch" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Sleep Between Batch</label>
+                    <comment>After batch of urls are crawled wait x seconds</comment>
+                </field>
+
+                <field id="sleep_when_empty" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Sleep When Empty</label>
+                    <comment>When there are no urls left to crawl wait for x seconds</comment>
+                </field>
+
+
+
+
+
+                <field id="crawl_threshold" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Crawl Threshold</label>
+                    <comment>A page must be logged this many times before it is crawled</comment>
+                </field>
+
+
+                <field id="cron_enabled" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Cron Crawler</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Should the crawler run through Magento's cron system?</comment>
+                </field>
+                <field id="cron_max_run_time" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Cron Max Run Time</label>
+                    <comment>If set cron will not run longer than this when run through crontab</comment>
+                    <depends>
+                        <field id="cron_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="cron_on_complete" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Cron On Complete</label>
+                    <comment>When all urls have been crawled either "stop" or "wait" for more urls</comment>
+                    <depends>
+                        <field id="cron_enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

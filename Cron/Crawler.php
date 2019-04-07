@@ -50,6 +50,7 @@ class Crawler
      */
     protected function getOnComplete()
     {
+        return 'stop';
         return $this->configHelper->getCronOnComplete();
     }
 }
