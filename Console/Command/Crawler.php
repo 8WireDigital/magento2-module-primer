@@ -12,6 +12,19 @@ class Crawler extends Command
 
     private $crawler;
 
+    private $input;
+
+    private $output;
+
+    private static $header = <<<HEADER
+   __  ___                   __         _____         __         ___      _              
+  /  |/  /__ ____ ____ ___  / /____    / ___/__ _____/ /  ___   / _ \____(_)_ _  ___ ____
+ / /|_/ / _ `/ _ `/ -_) _ \/ __/ _ \  / /__/ _ `/ __/ _ \/ -_) / ___/ __/ /  ' \/ -_) __/
+/_/  /_/\_,_/\_, /\__/_//_/\__/\___/  \___/\_,_/\__/_//_/\__/ /_/  /_/ /_/_/_/_/\__/_/   
+            /___/
+            
+HEADER;
+
     /**
      * Crawler constructor.
      *
@@ -38,6 +51,8 @@ class Crawler extends Command
             ->addOption('sleep-when-empty', null, InputOption::VALUE_OPTIONAL, 'Time in seconds to wait before trying again when no pages were crawled')
             ->addOption('crawl-threshold', null, InputOption::VALUE_OPTIONAL, 'Minimum priority for logged page to reach before being crawled')
             ->addOption('when-complete', null, InputOption::VALUE_OPTIONAL, 'What to do when all pages have been logged (sleep or stop)')
+            ->addOption('dump-config', 'd', InputOption::VALUE_OPTIONAL, 'dump run config before running crawler', 0)
+
             ->setDescription('Initiate primer crawler');
     }
 
@@ -50,7 +65,10 @@ class Crawler extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
+        $this->input = $input;
         $this->crawler->setOutput($output);
+
 
 
         $batchSize = $input->getOption('batch-size');
@@ -83,6 +101,26 @@ class Crawler extends Command
             $this->crawler->setWhenComplete($whenComplete);
         }
 
+
+        $this->showHeader();
+
         $this->crawler->run();
+    }
+
+
+    protected function showHeader()
+    {
+        $this->output->writeln(self::$header);
+
+        if ($this->input->hasParameterOption('--dump-config') || $this->input->hasParameterOption('-d')) {
+            $this->output->writeln('Crawl Threshold: '.$this->crawler->getCrawlThreshold());
+            $this->output->writeln('Batch Size: '.$this->crawler->getBatchSize());
+            $this->output->writeln('Sleep Between Batch: '.$this->crawler->getSleepBetweenBatch());
+            $this->output->writeln('Sleep when Empty: '.$this->crawler->getSleepWhenEmpty());
+            $this->output->writeln('Max Run Time: '.$this->crawler->getMaxRunTime());
+
+            $this->output->writeln('');
+
+        }
     }
 }

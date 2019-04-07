@@ -56,8 +56,6 @@ class Crawler implements CrawlerInterface
         $this->scopeConfig = $scopeConfig;
         $this->cacheManager = $cacheManager;
         $this->configHelper = $configHelper;
-
-
     }
 
     /**
@@ -69,6 +67,7 @@ class Crawler implements CrawlerInterface
             $this->writeln('<info>Not running crawler as full page cache is disabled</info>');
             return;
         }
+
         $starttime = time();
 
         while (true) {
