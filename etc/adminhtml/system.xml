@@ -36,21 +36,22 @@
                 </field>
 
 
-                <field id="cron_enabled" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="cron_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable Cron Crawler</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                     <comment>Should the crawler run through Magento's cron system?</comment>
                 </field>
-                <field id="cron_max_run_time" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="cron_max_run_time" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Cron Max Run Time</label>
-                    <comment>If set cron will not run longer than this when run through crontab</comment>
+                    <comment>Cron will terminate after running longer than this time (seconds)</comment>
                     <depends>
                         <field id="cron_enabled">1</field>
                     </depends>
                 </field>
-                <field id="cron_on_complete" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="cron_on_complete" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Cron On Complete</label>
-                    <comment>When all urls have been crawled either "stop" or "wait" for more urls</comment>
+                    <source_model>EightWire\Primer\Model\Config\Source\OnComplete</source_model>
+                    <comment>When all urls have been crawled either "stop" or "sleep" and wait for more urls</comment>
                     <depends>
                         <field id="cron_enabled">1</field>
                     </depends>

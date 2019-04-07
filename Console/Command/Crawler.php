@@ -51,7 +51,7 @@ HEADER;
             ->addOption('sleep-when-empty', null, InputOption::VALUE_OPTIONAL, 'Time in seconds to wait before trying again when no pages were crawled')
             ->addOption('crawl-threshold', null, InputOption::VALUE_OPTIONAL, 'Minimum priority for logged page to reach before being crawled')
             ->addOption('when-complete', null, InputOption::VALUE_OPTIONAL, 'What to do when all pages have been logged (sleep or stop)')
-            ->addOption('dump-config', 'd', InputOption::VALUE_OPTIONAL, 'dump run config before running crawler', 0)
+            ->addOption('dump-config', 'd', InputOption::VALUE_OPTIONAL, 'dump run config before running crawler')
 
             ->setDescription('Initiate primer crawler');
     }

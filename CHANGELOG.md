@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 
+## [0.1.11] - 2019-04-08
+### Added
+- Console command header
+- Option to dump run config in console
+- Ability to set config options in admin
+
+### Changed
+- Path to config options to fit admin UI
+
+### Fixed
+- Initialize Guzzle client only when used
+- Wrap page log in try/catch so that in the case of a failure it doesn't stop the page rendering
+
 ## [0.1.10] - 2019-04-04
 ### Fixed
 - add guzzle dependancy
