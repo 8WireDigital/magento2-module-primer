@@ -22,4 +22,4 @@ php bin/magento primer:crawler:run   # Run crawler task
 php bin/magento primer:flush         # Flush urls to force a recrawl
 ```
 
-Provided by [Eight Wire Digital](https://www.8wiredigital.co.nz/)
+Provided by [8 Wire Digital](https://www.8wiredigital.co.nz/)
