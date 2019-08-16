@@ -49,7 +49,7 @@ class PageLogger
                 $page->setUpdatedAt(time());
             } else {
                 $page = $this->pageRepository->create();
-                $page->setPath($request->getRequestUri());
+                $page->setPath($request->getRequestString());
                 $page->setMagentoVary($request->getCookie('X-Magento-Vary'));
                 $page->setStoreId($storeId);
                 $page->setStatus(1);
