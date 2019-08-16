@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [0.1.12] - 2019-08-16
+### Fixed
+- Don't include store code in logged paths
 
 ## [0.1.11] - 2019-04-08
 ### Added
