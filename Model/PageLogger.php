@@ -168,7 +168,7 @@ class PageLogger
     public function matchRequest($request)
     {
         $storeId = $this->storeManager->getStore()->getId();
-        $path = $request->getRequestUri();
+        $path = $request->getRequestString();
 
         $pathFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $pathFilter->setData('field', 'path');
