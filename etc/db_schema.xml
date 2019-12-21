@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table comment="eightwire_primer_page Table" engine="innodb" name="eightwire_primer_page" resource="default">
+
+        <column identity="true" name="page_id" nullable="false" padding="5" unsigned="true" xsi:type="smallint" comment="Entity Id" />
+        <column length="255" name="path" nullable="true" xsi:type="varchar"/>
+        <column length="255" name="magento_vary" nullable="true" xsi:type="varchar"/>
+        <column identity="false" name="status" nullable="false" xsi:type="smallint" padding="2" unsigned="true" />
+        <column identity="false" name="priority" nullable="true" xsi:type="smallint" padding="10" unsigned="true" />
+        <column name="created_at" nullable="false" xsi:type="datetime" default="CURRENT_TIMESTAMP" />
+        <column name="updated_at" nullable="false" xsi:type="datetime" default="CURRENT_TIMESTAMP" />
+        <column name="store_id" nullable="true" xsi:type="smallint" unsigned="true" padding="5"/>
+
+        <constraint referenceId="PRIMARY" xsi:type="primary">
+            <column name="page_id"/>
+        </constraint>
+
+        <index referenceId="PRIMER_PAGE_MAGENTO_VARY" indexType="hash">
+            <column name="magento_vary"/>
+        </index>
+        <index referenceId="PRIMER_PAGE_PATH" indexType="hash">
+            <column name="path"/>
+        </index>
+        <index referenceId="PRIMER_PAGE_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+        <index referenceId="PRIMER_PAGE_PRIORITY" indexType="btree">
+            <column name="priority"/>
+        </index>
+<!--        EIGHTWIRE_PRIMER_PAGE_STORE_ID_STORE_STORE_ID-->
+        <constraint xsi:type="foreign" referenceId="PRIMER_PAGE_STORE_ID" table="eightwire_primer_page" column="store_id" referenceTable="store" referenceColumn="store_id" onDelete="CASCADE" />
+    </table>
+</schema>

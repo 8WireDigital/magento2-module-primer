@@ -1,0 +1,24 @@
+{
+    "eightwire_primer_page": {
+        "column": {
+            "page_id": true,
+            "path": true,
+            "magento_vary": true,
+            "status": true,
+            "priority": true,
+            "created_at": true,
+            "updated_at": true,
+            "store_id": true
+        },
+        "index": {
+            "EIGHTWIRE_PRIMER_PAGE_MAGENTO_VARY": true,
+            "EIGHTWIRE_PRIMER_PAGE_PATH": true,
+            "EIGHTWIRE_PRIMER_PAGE_STATUS": true,
+            "EIGHTWIRE_PRIMER_PAGE_PRIORITY": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "EIGHTWIRE_PRIMER_PAGE_STORE_ID_STORE_STORE_ID": true
+        }
+    }
+}
