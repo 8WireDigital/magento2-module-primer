@@ -49,7 +49,7 @@ class PageLogger
                 $page->setUpdatedAt(time());
             } else {
                 $page = $this->pageRepository->create();
-                $page->setPath($request->getRequestString());
+                $page->setPath($this->getPath($request));
                 $page->setMagentoVary($request->getCookie('X-Magento-Vary'));
                 $page->setStoreId($storeId);
                 $page->setStatus(1);
@@ -157,6 +157,11 @@ class PageLogger
         return true;
     }
 
+    private function getPath($request)
+    {
+        return $request->getRequestString()?:'/';
+    }
+
 
     /**
      * Check for existing logs matching current request
@@ -168,7 +173,7 @@ class PageLogger
     public function matchRequest($request)
     {
         $storeId = $this->storeManager->getStore()->getId();
-        $path = $request->getRequestString();
+        $path = $this->getPath($request);
 
         $pathFilter = $this->objectManager->create('Magento\Framework\Api\Filter');
         $pathFilter->setData('field', 'path');
