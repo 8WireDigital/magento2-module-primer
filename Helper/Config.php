@@ -69,4 +69,30 @@ class Config
         );
     }
 
+    /**
+     * Should we log page requests to our page log?
+     *
+     * @return bool
+     */
+    public function loggingEnabled()
+    {
+        return $this->scopeConfig->getValue(
+            'system/cache_primer/logging_enabled',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Should we log page requests to our page log?
+     *
+     * @return bool
+     */
+    public function getLoggingSampleNumber()
+    {
+        return $this->scopeConfig->getValue(
+            'system/cache_primer/logging_sample_number',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+    }
+
 }

@@ -10,6 +10,8 @@
                 <cron_enabled>0</cron_enabled>
                 <cron_on_complete>stop</cron_on_complete>
                 <cron_max_run_time>240</cron_max_run_time>
+                <logging_enabled>1</logging_enabled>
+                <logging_sample_number>1</logging_sample_number>
             </cache_primer>
         </system>
     </default>

@@ -14,17 +14,18 @@ class PageLogger
         \EightWire\Primer\Api\PageRepositoryInterface $pageRepository,
         \Psr\Log\LoggerInterface $loggerInterface,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\ObjectManagerInterface $objectManager
+        \Magento\Framework\ObjectManagerInterface $objectManager,
+        \EightWire\Primer\Helper\Config $configHelper
 
     ) {
         $this->pageRepository = $pageRepository;
         $this->storeManager = $storeManager;
         $this->objectManager = $objectManager;
+        $this->config = $configHelper;
     }
 
     public function log(\Magento\Framework\App\Request\Http $request, \Magento\Framework\App\Response\Http $response)
     {
-
         /**
          * Things not to log
          *
@@ -36,7 +37,8 @@ class PageLogger
          * URLS with obvious tracking parameters - will likely be unique per visitor e.g mailchimp etc
          * Apply Sample so only 1 in 10 log for example
          */
-        if ($this->shouldLogRequest($request)
+        if ($this->config->loggingEnabled()
+            && $this->shouldLogRequest($request)
             && $this->shouldLogResponse($response)
             && $this->inSample()
         ) {
@@ -154,9 +156,20 @@ class PageLogger
      */
     private function inSample()
     {
-        return true;
+        $sample = (int) $this->config->getLoggingSampleNumber();
+
+        if ($sample <= 1) {
+            return true;
+        }
+
+        return (rand(1, $sample) === 1);
     }
 
+    /**
+     * Get path for logging, returns request string from request object or / if the request string is blank
+     * @param $request
+     * @return string
+     */
     private function getPath($request)
     {
         return $request->getRequestString()?:'/';

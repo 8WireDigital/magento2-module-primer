@@ -56,6 +56,20 @@
                         <field id="cron_enabled">1</field>
                     </depends>
                 </field>
+
+                <field id="logging_enabled" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Page Logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Should page requests be logged to primer page database</comment>
+                </field>
+
+                <field id="logging_sample_number" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Logging Sample</label>
+                    <comment>If > 1 pages will only be logged on every x requests, e.g if 10 1 in every 10 page requests will be logged</comment>
+                    <depends>
+                        <field id="logging_enabled">1</field>
+                    </depends>
+                </field>
             </group>
         </section>
     </system>
